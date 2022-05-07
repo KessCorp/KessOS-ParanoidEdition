@@ -48,9 +48,9 @@ gdt_load:
     cli                 ;; Clear interrupts to prevent funky things from happening.
     lgdt [Pointer]      ;; Load GDT into GDT register.
     mov rax, 0x10       ;; Data selector.
-    mov ds, rax         ;; Set data segment to data selector.
-    mov es, rax         ;; Set extra segment to data selector.
-    mov ss, rax         ;; Set stack segment to data selector.
+    mov ds, rax         ;; Set data segment register to data selector.
+    mov es, rax         ;; Set extra segment register to data selector.
+    mov ss, rax         ;; Set stack segment register to data selector.
     mov fs, rax         ;; Set FS to data selector as it is currently unused.
     mov gs, rax         ;; Set GS to data selector as it is currently unused.
     pop rdi             ;; Pop return address off stack.
