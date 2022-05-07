@@ -66,6 +66,3 @@ error_code_refs:
 vector_fired_msg: db "VECTOR FIRED: ", 0x0
 notice: db "System is now halted. When you are done debugging, push the power button.", 0xA, 0x0
 newline: db 0xA, 0x0
-
-;; Error codes:
-ec_div0: db "DIVISION_BY_ZERO", 0xA, 0x0
