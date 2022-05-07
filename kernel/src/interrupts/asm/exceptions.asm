@@ -106,10 +106,6 @@ general_protection_fault:
 page_fault:
     panic 0xE
 
-error_code_refs:
-    dq ec_div0
-
-
 vector_fired_msg: db "VECTOR FIRED: ", 0x0
 notice: db "System is now halted. When you are done debugging, push the power button.", 0xA, 0x0
 newline: db 0xA, 0x0
