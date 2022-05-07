@@ -12,7 +12,7 @@ extern clearScreen
 extern canvas
 
 global div0_handler
-global debug_exceptiong
+global debug_exception
 global breakpoint_exception
 global overflow_exception
 global boundrange_exceeded_exception
