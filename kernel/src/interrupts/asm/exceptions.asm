@@ -12,6 +12,18 @@ extern clearScreen
 extern canvas
 
 global div0_handler
+global debug_exceptiong
+global breakpoint_exception
+global overflow_exception
+global boundrange_exceeded_exception
+global invalid_opcode_exception
+global dev_not_avail_exception
+global double_fault
+global invalid_tss_exception
+global segment_not_present
+global stack_segment_fault
+global general_protection_fault
+global page_fault
 
 %define S_WARNING 0
 %define S_INFO 1
@@ -58,6 +70,41 @@ global div0_handler
 div0_handler:
     panic 0x0
 
+debug_exception:
+    panic 0x1
+
+breakpoint_exception:
+    panic 0x3
+
+overflow_exception:
+    panic 0x4
+
+boundrange_exceeded_exception:
+    panic 0x5
+
+invalid_opcode_exception:
+    panic 0x6
+
+dev_not_avail_exception:
+    panic 0x7
+
+double_fault:
+    panic 0x8
+
+invalid_tss_exception:
+    panic 0xA
+
+segment_not_present:
+    panic 0xB
+
+stack_segment_fault:
+    panic 0xC
+
+general_protection_fault:
+    panic 0xD
+
+page_fault:
+    panic 0xE
 
 error_code_refs:
     dq ec_div0

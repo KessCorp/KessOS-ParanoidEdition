@@ -105,6 +105,18 @@ static void init() {
     gdt_load();
     log("Setting up exceptions..\n", S_INFO);
     idt_set_vec(0x0, div0_handler, TRAP_GATE_FLAGS);
+    idt_set_vec(0x1, debug_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x3, breakpoint_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x4, overflow_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x5, boundrange_exceeded_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x6, invalid_opcode_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x7, dev_not_avail_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0x8, double_fault, TRAP_GATE_FLAGS);
+    idt_set_vec(0xA, invalid_tss_exception, TRAP_GATE_FLAGS);
+    idt_set_vec(0xB, segment_not_present, TRAP_GATE_FLAGS);
+    idt_set_vec(0xC, stack_segment_fault, TRAP_GATE_FLAGS);
+    idt_set_vec(0xD, general_protection_fault, TRAP_GATE_FLAGS);
+    idt_set_vec(0xE, page_fault, TRAP_GATE_FLAGS);
     log("Loading IDTR with Interrupt Descriptor Table Pointer..\n", S_INFO);
     idt_install();
 }
