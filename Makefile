@@ -1,12 +1,12 @@
 all:
-	mkdir -p kernel/lib/arch/memory/x86_64
-	mkdir -p kernel/lib/proc/x86_64
-	mkdir -p kernel/lib/interrupts/x86_64 kernel/lib/interrupts/sycall kernel/lib/interrupts/syscall/x86_64
-	mkdir -p kernel/lib/drivers/ps2/x86_64
+	mkdir -p kernel/lib/arch/memory/asm
+	mkdir -p kernel/lib/proc/asm
+	mkdir -p kernel/lib/interrupts/x86_64 kernel/lib/interrupts/sycall kernel/lib/interrupts/syscall/asm
+	mkdir -p kernel/lib/drivers/ps2/asm
 	cd gnu-efi/; make; make bootloader; cd ../; cd kernel; make; make buildimg
 
 run:
-	cd kernel/; make run
+	cd kernel/; make debug
 
 debug:
 	cd kernel/; make debug
