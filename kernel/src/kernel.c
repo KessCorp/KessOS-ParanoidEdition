@@ -4,6 +4,7 @@
 #include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
 #include <interrupts/IDT.h>
+#include <interrupts/exceptions.h>
 
 canvas_t canvas = {
     .x = 0,
@@ -102,6 +103,8 @@ void log(const char* format, STATUS status, ...) {
 static void init() {
     log("Setting up Global Descriptor Table..\n", S_INFO);
     gdt_load();
+    log("Setting up exceptions..\n", S_INFO);
+    idt_set_vec(0x0, div0_handler, TRAP_GATE_FLAGS);
     log("Loading IDTR with Interrupt Descriptor Table Pointer..\n", S_INFO);
     idt_install();
 }
