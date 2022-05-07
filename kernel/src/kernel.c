@@ -1,6 +1,8 @@
 #include <debug/log.h>
 #include <arch/memory/memory.h>
+#include <arch/memory/gdt.h>
 #include <drivers/video/FrameBuffer.h>
+#include <util/asm.h>
 
 canvas_t canvas = {
     .x = 0,
@@ -96,14 +98,21 @@ void log(const char* format, STATUS status, ...) {
 }
 
 
+static void init() {
+    log("Setting up Global Descriptor Table..\n", S_INFO);
+    gdt_load();
+}
+
+
 int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp, uint8_t legacy_mode) {
-  canvas.font = font;
-  canvas.lfb = lfb;
-  gLegacyModeEnabled = legacy_mode;
+    canvas.font = font;
+    canvas.lfb = lfb;
+    gLegacyModeEnabled = legacy_mode;
 
-	log("Hello, World!\n", S_INFO);
+    log("Welcome to KessOS Paranoid Edition!\n", S_INFO);
+    init();
 
-  while (1) {
-    __asm__ __volatile__("cli; hlt");
-  }
+    while (1) {
+        __asm__ __volatile__("cli; hlt");
+    }
 }
