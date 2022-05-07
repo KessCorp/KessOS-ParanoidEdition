@@ -5,6 +5,8 @@
 #include <util/asm.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
+#include <arch/memory/vmm.h>
+
 
 canvas_t canvas = {
     .x = 0,
@@ -100,7 +102,7 @@ void log(const char* format, STATUS status, ...) {
 }
 
 
-static void init() {
+static void init(meminfo_t meminfo) {
     log("Setting up Global Descriptor Table..\n", S_INFO);
     gdt_load();
     log("Setting up exceptions..\n", S_INFO);
@@ -119,6 +121,8 @@ static void init() {
     idt_set_vec(0xE, page_fault, TRAP_GATE_FLAGS);
     log("Loading IDTR with Interrupt Descriptor Table Pointer..\n", S_INFO);
     idt_install();
+    log("Setting up L4 paging..\n", S_INFO);
+    vmm_init(meminfo);
 }
 
 
@@ -128,7 +132,7 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
     gLegacyModeEnabled = legacy_mode;
 
     log("Welcome to KessOS Paranoid Edition!\n", S_INFO);
-    init();
+    init(meminfo);
 
     while (1) {
         __asm__ __volatile__("cli; hlt");
