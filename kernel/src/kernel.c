@@ -3,8 +3,10 @@
 #include <arch/memory/gdt.h>
 #include <arch/memory/vmm.h>
 #include <arch/cpu/cpuid.h>
+#include <arch/cpu/lapic/lapic.h>
 #include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
+#include <util/kernflags.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
 #include <protection/iopl.h>
@@ -143,6 +145,12 @@ static void init(meminfo_t meminfo, void* rsdp) {
     zero_iopl();
     log("Setting up ACPI..\n", S_INFO);
     acpi_init(rsdp);
+    
+    // Setup APIC if it wasn't determained that we shouldn't from ACPI_INIT.
+    if (kern_flags & USING_APIC) {
+        log("Setting up LAPIC..\n", S_INFO);
+        lapic_init();
+    }
 }
 
 
