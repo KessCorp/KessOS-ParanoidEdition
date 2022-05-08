@@ -22,7 +22,7 @@ void log(const char* format, STATUS status, ...) {
 
   size_t args = 0;
 
-  for (int i = 0; i < strlen(format); ++i) {
+  for (size_t i = 0; i < strlen(format); ++i) {
     if (format[i] == '%') {
       switch (format[i + 1]) {
       case 's':
@@ -61,14 +61,14 @@ void log(const char* format, STATUS status, ...) {
     break;
   }
 
-  for (int i = 0; i < strlen(format); ++i) {
+  for (size_t i = 0; i < strlen(format); ++i) {
     if (format[i] == '%') {
       switch (format[i + 1]) {
       case 's':
         {
           const char* arg = va_arg(ptr, const char*);
 
-          for (int j = 0; j < strlen(arg); ++j) {
+          for (size_t j = 0; j < strlen(arg); ++j) {
             char terminated[2] = {arg[j], 0x0};
             kwrite(&canvas, terminated, color);
           }
@@ -89,7 +89,7 @@ void log(const char* format, STATUS status, ...) {
       case 'x':
         {
           int arg = va_arg(ptr, int);
-          kwrite(&canvas, hex2str(arg), color);
+          kwrite(&canvas, (char*)hex2str(arg), color);
           ++i;
           continue;
         }
@@ -127,6 +127,7 @@ static void init(meminfo_t meminfo) {
 
 
 int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp, uint8_t legacy_mode) {
+    (void)rsdp;     // TODO: Remove this when using RSPD.
     canvas.font = font;
     canvas.lfb = lfb;
     gLegacyModeEnabled = legacy_mode;

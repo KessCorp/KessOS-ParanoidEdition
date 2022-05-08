@@ -4,6 +4,9 @@
 
 
 void memzero(void* addr, size_t n) {
-    for (size_t i = 0; i < n; ++i)
-        *(size_t*)(addr + i) = 0x0;
+    char* ch = (char*)addr;
+
+    for (int i = 0; i < n; ++i) {
+        ch[i] = 0x0;
+    }
 }

@@ -7,5 +7,6 @@
 
 void vmm_init(meminfo_t meminfo);
 void map_page(void* logical, unsigned int flags);
+void load_pml4(void* pml4);
 
 #endif
