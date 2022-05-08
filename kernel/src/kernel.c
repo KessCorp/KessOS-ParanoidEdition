@@ -1,11 +1,12 @@
 #include <debug/log.h>
 #include <arch/memory/memory.h>
 #include <arch/memory/gdt.h>
+#include <arch/memory/vmm.h>
+#include <arch/cpu/cpuid.h>
 #include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
-#include <arch/memory/vmm.h>
 #include <protection/iopl.h>
 #include <firmware/acpi/acpi.h>
 
@@ -115,6 +116,9 @@ void log(const char* format, STATUS status, ...) {
 
 
 static void init(meminfo_t meminfo, void* rsdp) {
+    int ebx = 0, unused;
+    __cpuid(0, unused, ebx, unused, unused);
+    log("CPU model number: %x\n", S_INFO, ebx);
     log("Setting up Global Descriptor Table..\n", S_INFO);
     gdt_load();
     log("Setting up exceptions..\n", S_INFO);
