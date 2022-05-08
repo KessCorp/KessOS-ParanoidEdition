@@ -126,7 +126,7 @@ uint8_t unmap_page(void* logical) {
     struct MappingTable* pt = (struct MappingTable*)(pdt->entries[pd_idx] & PAGE_ADDR_MASK);
 
     if (pt->entries[pt_idx] & PAGE_BIT_P_PRESENT) {
-        pt->entries[pt_idx] = ((addr & PAGE_ADDR_MASK) & ~(PAGE_BIT_P_PRESENT));
+        pt->entries[pt_idx] = ((addr & PAGE_ADDR_MASK) & ~(PAGE_BIT_P_PRESENT));        // Just remove the PRESENT bit.
         flush_tlb(logical);
     }
 
