@@ -7,6 +7,17 @@
 #include <interrupts/exceptions.h>
 #include <arch/memory/vmm.h>
 #include <protection/iopl.h>
+#include <firmware/acpi/acpi.h>
+
+/*
+ *  Kernel flags.
+ *
+ *  Bit 0: Using APIC if set, otherwise legacy PIC.
+ *  Bit 1: Using ACPI.
+ *
+ */
+
+uint8_t kern_flags = 0x0 | (1 << 1);
 
 
 canvas_t canvas = {
@@ -103,7 +114,7 @@ void log(const char* format, STATUS status, ...) {
 }
 
 
-static void init(meminfo_t meminfo) {
+static void init(meminfo_t meminfo, void* rsdp) {
     log("Setting up Global Descriptor Table..\n", S_INFO);
     gdt_load();
     log("Setting up exceptions..\n", S_INFO);
@@ -126,17 +137,18 @@ static void init(meminfo_t meminfo) {
     vmm_init(meminfo);
     log("Setting IOPL of EFLAGS to 0 (ring 0 access only).\n", S_INFO);
     zero_iopl();
+    log("Setting up ACPI..\n", S_INFO);
+    acpi_init(rsdp);
 }
 
 
 int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp, uint8_t legacy_mode) {
-    (void)rsdp;     // TODO: Remove this when using RSPD.
     canvas.font = font;
     canvas.lfb = lfb;
     gLegacyModeEnabled = legacy_mode;
 
     log("Welcome to KessOS Paranoid Edition!\n", S_INFO);
-    init(meminfo);
+    init(meminfo, rsdp);
 
     while (1) {
         __asm__ __volatile__("cli; hlt");
