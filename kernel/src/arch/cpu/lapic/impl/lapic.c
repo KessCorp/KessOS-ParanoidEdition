@@ -5,9 +5,9 @@
 #include <stdint.h>
 
 
-static inline uint8_t lapic_supported() {
-    uint32_t unused, edx;
-    __get_cpuid(1, &unused, &unused, &unused, &edx);
+static inline uint32_t lapic_supported() {
+    uint32_t eax, unused, edx;
+    __get_cpuid(1, &eax, &unused, &unused, &edx);
     return edx & CPUID_FEAT_EDX_APIC;
 }
 
@@ -21,4 +21,6 @@ void lapic_init() {
         kern_flags &= ~(USING_APIC);
         return;
     }
+
+    log("Processor has an LAPIC.\n", S_INFO);
 }
