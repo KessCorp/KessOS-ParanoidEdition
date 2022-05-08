@@ -58,6 +58,11 @@ static void* internel_alloc_page() {
 }
 
 
+static void flush_tlb(void* addr) {
+    __asm__ __volatile__("invlpg (%0)" :: "r" (addr));
+}
+
+
 void map_page(void* logical, unsigned int flags) {
     uint64_t addr = (uint64_t)logical;
     flags |= PAGE_BIT_P_PRESENT;            // Make sure it is present.
@@ -105,6 +110,30 @@ void map_page(void* logical, unsigned int flags) {
 }
 
 
+
+uint8_t unmap_page(void* logical) {
+    uint64_t addr = (uint64_t)logical;
+    if (addr % 0x1000 != 0) return 0;
+
+    // Get indices from logical address.
+    int pml4_idx = (addr >> 39) & 0x1FF;
+    int pdpt_idx = (addr >> 30) & 0x1FF;
+    int pd_idx = (addr >> 21) & 0x1FF;
+    int pt_idx = (addr >> 12) & 0x1FF; 
+
+    struct MappingTable* pdpt = (struct MappingTable*)(pml4.entries[pml4_idx] & PAGE_ADDR_MASK);
+    struct MappingTable* pdt = (struct MappingTable*)(pdpt->entries[pdpt_idx] & PAGE_ADDR_MASK);
+    struct MappingTable* pt = (struct MappingTable*)(pdt->entries[pd_idx] & PAGE_ADDR_MASK);
+
+    if (pt->entries[pt_idx] & PAGE_BIT_P_PRESENT) {
+        pt->entries[pt_idx] = ((addr & PAGE_ADDR_MASK) & ~(PAGE_BIT_P_PRESENT));
+        flush_tlb(logical);
+    }
+
+    return 1;
+}
+
+
 void vmm_init(meminfo_t meminfo) {
     log("Setting allocation base..\n", S_INFO);
     set_alloc_base(meminfo);
@@ -122,11 +151,12 @@ void vmm_init(meminfo_t meminfo) {
 
     log("Identity mapping some address space for KessKernel..\n", S_INFO);
     
-    for (uint64_t addr = 0; addr < GB*2; addr += 4096) {
+    for (uint64_t addr = 0; addr < GB*6; addr += 4096) {
         map_page((void*)addr, PAGE_BIT_RW_WRITABLE | PAGE_BIT_P_PRESENT);
     }
 
     log("Finished mapping..\n", S_INFO);
     log("Loading PML4 into CR3 register..\n", S_INFO);
     load_pml4(&pml4);
+    log("Finished setting up VMM.\n", S_INFO);
 }

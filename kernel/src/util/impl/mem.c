@@ -6,7 +6,7 @@
 void memzero(void* addr, size_t n) {
     char* ch = (char*)addr;
 
-    for (int i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         ch[i] = 0x0;
     }
 }
