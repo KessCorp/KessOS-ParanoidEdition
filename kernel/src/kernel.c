@@ -6,6 +6,7 @@
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
 #include <arch/memory/vmm.h>
+#include <protection/iopl.h>
 
 
 canvas_t canvas = {
@@ -123,6 +124,8 @@ static void init(meminfo_t meminfo) {
     idt_install();
     log("Setting up L4 paging..\n", S_INFO);
     vmm_init(meminfo);
+    log("Setting IOPL of EFLAGS to 0 (ring 0 access only).\n", S_INFO);
+    zero_iopl();
 }
 
 

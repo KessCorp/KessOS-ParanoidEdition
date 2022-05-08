@@ -3,6 +3,7 @@ all:
 	mkdir -p kernel/lib/proc/asm
 	mkdir -p kernel/lib/interrupts/asm kernel/lib/interrupts/sycall kernel/lib/interrupts/syscall/asm
 	mkdir -p kernel/lib/drivers/ps2/asm
+	mkdir -p kernel/lib/protection kernel/lib/protection/asm
 	cd gnu-efi/; make; make bootloader; cd ../; cd kernel; make; make buildimg
 
 run:
