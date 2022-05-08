@@ -113,7 +113,7 @@ void map_page(void* logical, unsigned int flags) {
 
 uint8_t unmap_page(void* logical) {
     uint64_t addr = (uint64_t)logical;
-    if (addr % 0x1000 != 0) return 0;
+    if (addr % 0x1000 != 0) return 0;           // Return 0 (false) if address is not page aligned.
 
     // Get indices from logical address.
     int pml4_idx = (addr >> 39) & 0x1FF;
