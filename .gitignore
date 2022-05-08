@@ -50,13 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
 *.img
 logfile.txt
 .#*
->>>>>>> 67a6770 (Continued.)
->>>>>>> b8e1215 (Continue.)
