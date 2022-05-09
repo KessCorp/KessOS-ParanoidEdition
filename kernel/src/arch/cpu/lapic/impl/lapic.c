@@ -1,5 +1,8 @@
 #include <arch/cpu/lapic/lapic.h>
 #include <arch/cpu/cpuid.h>
+#include <arch/cpu/msr/msr.h>
+#include <arch/io/io.h>
+#include <arch/io/legacy-pic.h>
 #include <debug/log.h>
 #include <util/kernflags.h>
 #include <stdint.h>
@@ -22,5 +25,8 @@ void lapic_init() {
         return;
     }
 
-    log("Processor has an LAPIC.\n", S_INFO);
+    log("Processor has an LAPIC.\n", S_INFO); 
+    log("Disabling legacy PIC..\n", S_INFO);
+    outportb(PIC1_DATA, 0xFF);
+    outportb(PIC2_DATA, 0xFF);
 }
