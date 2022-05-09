@@ -1,4 +1,5 @@
 #include <drivers/video/FrameBuffer.h>
+#include <util/asm.h>
 #include <stdint.h>
 
 // 2022 Ian Moffett <ian@kesscoin.com>
@@ -30,8 +31,8 @@ void put_pix(canvas_t canvas, unsigned int x, unsigned int y, unsigned int color
 
 
 void draw_square(canvas_t canvas, unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int color) {
-  for (int sx = x; sx < x + w; ++sx) {
-    for (int sy = y; sy < y + h; ++sy) {
+  for (unsigned int sx = x; sx < x + w; ++sx) {
+    for (unsigned int sy = y; sy < y + h; ++sy) {
       put_pix(canvas, sx, sy, color);
     }
   }
@@ -40,7 +41,7 @@ void draw_square(canvas_t canvas, unsigned int x, unsigned int y, unsigned int w
 
 
 void kwrite(canvas_t* canvas, const char* const STR, unsigned int color) {
-    for (int i = 0; i < strlen(STR); ++i) {
+    for (size_t i = 0; i < strlen(STR); ++i) {
         if (STR[i] == '\n') {
             canvas->x = canvas->prevX;
             canvas->y += 20;
@@ -62,7 +63,7 @@ void kwrite(canvas_t* canvas, const char* const STR, unsigned int color) {
 void clearScreen(canvas_t* canvas, unsigned int color) {
     uint64_t bytesPerScanline = canvas->lfb->ppsl * 4;
 
-    for (int vsl = 0; vsl < canvas->lfb->height; ++vsl) {
+    for (unsigned int vsl = 0; vsl < canvas->lfb->height; ++vsl) {
         uint64_t pixPtrBase = (uint64_t)canvas->lfb->baseAddr + (bytesPerScanline * vsl);
         for (uint32_t* pixelPtr = (uint32_t*)pixPtrBase; pixelPtr < (uint32_t*)(pixPtrBase + bytesPerScanline); ++pixelPtr) {
             *pixelPtr = color;
