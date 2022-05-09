@@ -1,11 +1,15 @@
 #include <debug/log.h>
-#include <arch/memory/memory.h>
-#include <arch/memory/gdt.h>
 #include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
+#include <util/kernflags.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
+#include <interrupts/irq.h>
 #include <arch/memory/vmm.h>
+#include <arch/memory/memory.h>
+#include <arch/memory/gdt.h>
+#include <arch/timer/pit.h>
+#include <arch/io/legacy-pic.h>
 #include <protection/iopl.h>
 #include <firmware/acpi/acpi.h>
 
@@ -131,6 +135,8 @@ static void init(meminfo_t meminfo, void* rsdp) {
     idt_set_vec(0xC, stack_segment_fault, TRAP_GATE_FLAGS);
     idt_set_vec(0xD, general_protection_fault, TRAP_GATE_FLAGS);
     idt_set_vec(0xE, page_fault, TRAP_GATE_FLAGS);
+    log("Setting up IRQs..\n", S_INFO);
+    idt_set_vec(0x20, irq0_handler, INT_GATE_FLAGS);
     log("Loading IDTR with Interrupt Descriptor Table Pointer..\n", S_INFO);
     idt_install();
     log("Setting up L4 paging..\n", S_INFO);
@@ -139,6 +145,13 @@ static void init(meminfo_t meminfo, void* rsdp) {
     zero_iopl();
     log("Setting up ACPI..\n", S_INFO);
     acpi_init(rsdp);
+    kern_flags &= ~(USING_APIC);        // TODO: When implenting APIC, remove this.
+
+
+    if (!(kern_flags & USING_APIC)) {
+        init_pic();
+        pit_init();
+    }
 }
 
 
@@ -149,8 +162,9 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
 
     log("Welcome to KessOS Paranoid Edition!\n", S_INFO);
     init(meminfo, rsdp);
+    STI;
 
     while (1) {
-        __asm__ __volatile__("cli; hlt");
+        __asm__ __volatile__("hlt");
     }
 }
