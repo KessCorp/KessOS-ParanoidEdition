@@ -1,6 +1,8 @@
 #include <arch/timer/pit.h>
 #include <arch/io/io.h>
 #include <util/kernflags.h>
+#include <util/asm.h>
+#include <util/etc.h>
 #include <arch/io/legacy-pic.h>
 #include <debug/log.h>
 
@@ -9,7 +11,7 @@
 #define CHANNEL2 0x42
 #define CHANNEL3 0x43
 
-static uint8_t ticks = 0;
+static uint16_t ticks = 0;
 
 
 // 2022 Ian Moffett <ian@kesscoin.com>
@@ -34,4 +36,11 @@ void pit_init() {
 
 void pit_tick() {
     ++ticks;            // Will overflow and wrap around to 0, so no need to worry to reset the value.
+}
+
+
+void pit_sleep(uint16_t nticks) {
+    UNGLITCH_ARG(nticks);
+    uint32_t eticks = ticks + nticks;
+    while (ticks < eticks);
 }
