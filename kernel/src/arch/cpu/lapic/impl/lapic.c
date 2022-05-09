@@ -7,38 +7,22 @@
 #include <util/kernflags.h>
 #include <stdint.h>
 
-static volatile struct __attribute__((packed)) LAPICRegs {
-    uint32_t reserved;              // RESERVED.
-    uint32_t id;                    // LAPIC ID.
-    uint32_t version;               // LAPIC VERSION.
-    uint32_t reserved1;             // RESERVED.
-    uint32_t tpr;                   // TASK PRIORITY REGISTER.
-    uint32_t apr;                   // ARBIRATION PRIORITY REGISTER.
-    uint32_t ppr;                   // PROCESSOR PRIORITY REGISTER.
-    uint32_t eoi;                   // END OF INTERRUPT.
-    uint32_t rrd;                   // REMOTE READ REGISTER.
-    uint32_t logical_dest;          // LOGICAL DEST.
-    uint32_t dest_fmt;              // DEST FORMAT REGISTER.
-    uint32_t siv;                   // SPURIOUS INTERRUPT VECTOR.
-    uint32_t isr;                   // IN-SERVICE REGISTER.
-    uint32_t tmr;                   // TRIGGER MODE REGISTER.
-    uint32_t irr;                   // INTERRUPT REQUEST REGISTER.
-    uint32_t error;                 // ERROR STATUS REGISTER.
-    uint32_t reserved2;             // RESERVED.
-    uint32_t lvt_cmci;              // LVT CORRECTED MACHINE CHECK INTERRUPT REGISTER.
-    uint32_t icr;                   // INTERRUPT COMMAND REGISTER.
-    uint32_t lvt_timer;             // LVT TIMER REGISTER. 
-    uint32_t lvt_thermal_sensor;    // LVT THERMAL SENSOR REGISTER.
-    uint32_t lvt_pmcr;              // LVT PERFORMACE MONITORING COUNTERS REGISTER.
-    uint32_t lvt_lint0;             // LVT LINT0 REGISTER.
-    uint32_t lvt_lint1;             // LVT LINT1 REGISTER.
-    uint32_t lvt_error;             // LVT ERROR REGISTER.
-    uint32_t timer_icr;             // TIMER INITIAL COUNT REGISTER.
-    uint32_t timer_ccr;             // TIMER CURRENT COUNT REGISTER.
-    uint32_t reserved3;             // RESERVED.
-    uint32_t timer_divide_config;   // TIMER DIVIDE CONFIG REGISTER.
-    uint32_t reserved4;             // RESERVED.
-} *lapic_regs;
+
+enum {
+    LAPIC_ID_REG        = 0x20,     // ID REGISTER.
+    LAPIC_VERSION_REG   = 0x30,     // VERSION REGISTER.
+    LAPIC_TPR           = 0x80,     // TASK PRIORITY REGISTER.
+    LAPIC_APR           = 0x90,     // ARBIRATION PRIORITY REGISTER.
+    LAPIC_PPR           = 0xA0,     // PROCESSOR PRIORITY REGISTER.
+    LAPIC_EOI           = 0xB0,     // END OF INTERRUPT.
+    LAPIC_RRD           = 0xC0,     // REMOTE READ REGISTER.
+    LAPIC_LDF           = 0xD0,     // LOGICAL DESTINATION FORMAT.
+    LAPIC_DEST_FMT      = 0xE0,     // DESTINATION FORMAT.
+    LAPIC_SIV           = 0xF0,     // SPURIOUS INTERRUPT VECTOR.
+    LAPIC_ISR           = 0x100,    // IN-SERVICE REGISTER.
+    LAPIC_TMR           = 0x180,    // TRIGGER MODE REGISTER.
+    LAPIC_IRR           = 0x200     // INTERRUPT REQUEST REGISTER.    
+};
 
 
 static uint64_t lapic_base = 0x0;
