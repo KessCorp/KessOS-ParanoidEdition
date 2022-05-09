@@ -164,6 +164,14 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
     init(meminfo, rsdp);
     STI;
 
+    pit_sleep(200);
+
+    CLI;
+    clearScreen(&canvas, 0x000000);
+    STI;
+
+    log("Hello, World!\n", S_INFO);
+
     while (1) {
         __asm__ __volatile__("hlt");
     }
